@@ -1,3 +1,4 @@
+
 # Blog Editor — Client Application
 
 ## Overview
@@ -7,10 +8,10 @@ It allows users to view, edit, and manage blog posts, including drafts and publi
 
 ## Features
 
-- **View Blogs**: Displays a list of blogs categorized into "Published" and "Drafts".
-- **Edit Blogs**: Enables users to select a blog for editing.
-- **View Blog Details**: Allows users to view the full content of a blog in a modal window.
-- **Delete Blog**: Provides functionality to delete a blog post.
+- **View Blogs:** Displays a list of blogs categorized into "Published" and "Drafts".
+- **Edit Blogs:** Enables users to select a blog for editing.
+- **View Blog Details:** Allows users to view the full content of a blog in a modal window.
+- **Delete Blog:** Provides functionality to delete a blog post.
 
 ## Technologies Used
 
@@ -25,26 +26,25 @@ It allows users to view, edit, and manage blog posts, including drafts and publi
    ```bash
    git clone https://github.com/Govarthan30/blogs.git
    cd blogs/client
-Install Dependencies
+   ```
 
-bash
-Copy
-Edit
-npm install
-Run the Application
+2. **Install Dependencies**
 
-bash
-Copy
-Edit
-npm start
-This will start the development server and open the application in your default browser.
+   ```bash
+   npm install
+   ```
 
-Usage
-Viewing Blogs: Click on a blog title to select it for editing.
+3. **Run the Application**
 
-Editing Blogs: After selecting a blog, make the necessary changes and save them.
+   ```bash
+   npm start
+   ```
 
-Viewing Blog Details: Double-click on a blog title to view its full content in a modal.
+   This will start the development server and open the application in your default browser.
 
-Deleting Blogs: Click the delete button to remove a blog post.
+## Usage
 
+- **Viewing Blogs:** Click on a blog title to select it for editing.
+- **Editing Blogs:** After selecting a blog, make the necessary changes and save them.
+- **Viewing Blog Details:** Double-click on a blog title to view its full content in a modal.
+- **Deleting Blogs:** Click the delete button to remove a blog post.
