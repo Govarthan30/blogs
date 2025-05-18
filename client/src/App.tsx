@@ -1,14 +1,7 @@
 import { useState } from 'react';
 import Editor from './components/Editor';
 import BlogList from './components/BlogList';
-
-type Blog = {
-  _id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  status: 'draft' | 'published';
-};
+import type{ Blog } from '../src/types';  // import from central type file
 
 function App() {
   const [editBlog, setEditBlog] = useState<Blog | null>(null);
@@ -21,8 +14,7 @@ function App() {
 
       <hr style={{ margin: '40px 0' }} />
 
-      {/* Cast setEditBlog to avoid type incompatibility */}
-      <BlogList onEdit={setEditBlog as (blog: Blog) => void} />
+      <BlogList onEdit={setEditBlog} />
     </div>
   );
 }

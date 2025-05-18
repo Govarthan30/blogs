@@ -6,13 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-type Blog = {
-  _id?: string;
-  title: string;
-  content: string;
-  tags: string[];
-  status?: 'draft' | 'published';
-};
+import type { Blog } from '../types';  // Import the Blog type here
 
 type EditorProps = {
   blogToEdit?: Blog | null;
@@ -115,11 +109,9 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
 
   return (
     <>
-      {/* Style to make typed text black */}
       <style>{`.ql-editor { color: #000 !important; }`}</style>
 
       <div style={{ padding: '20px', borderRadius: '12px', background: '#f9f9f9', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        {/* Title Input */}
         <input
           type="text"
           placeholder="Title"
@@ -130,10 +122,8 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
           onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
         />
 
-        {/* Rich Text Editor */}
         <ReactQuill value={content} onChange={setContent} />
 
-        {/* Tags Input */}
         <input
           type="text"
           placeholder="Tags (comma separated)"
@@ -144,7 +134,6 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
           onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
         />
 
-        {/* Publish Button */}
         <div style={{ marginTop: 20 }}>
           <button
             onClick={handlePublish}
@@ -156,7 +145,6 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
           </button>
         </div>
 
-        {/* Toast for notifications */}
         <ToastContainer />
       </div>
     </>

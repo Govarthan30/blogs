@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-// Type definition for Blog
-type Blog = {
-  _id: string;
-  title: string;
-  content: string;
-  status: 'draft' | 'published';
-  updated_at: string;
-};
-
-type BlogListProps = {
-  onEdit: (blog: Blog) => void;
-};
-
-const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
-  const [viewBlog, setViewBlog] = useState<Blog | null>(null);
+const BlogList = ({ onEdit }) => {
+  const [blogs, setBlogs] = useState([]);
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
+  const [viewBlog, setViewBlog] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   // Fetch blogs from backend
@@ -35,17 +22,17 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
   }, []);
 
   // Format the timestamp into readable format
-  const formatDate = (date: string) =>
+  const formatDate = (date) =>
     new Date(date).toLocaleString('en-IN', { hour12: true });
 
   // When a blog is clicked, load into editor
-  const handleSelect = (blog: Blog) => {
+  const handleSelect = (blog) => {
     setSelectedBlogId(blog._id);
     onEdit(blog);
   };
 
   // When blog is double-clicked, open preview modal
-  const handleDoubleClick = (blog: Blog) => {
+  const handleDoubleClick = (blog) => {
     setViewBlog(blog);
     setModalVisible(true);
   };
@@ -57,12 +44,12 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
   };
 
   // Handle delete request
-  const handleDelete = async (blogId: string) => {
+  const handleDelete = async (blogId) => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
 
     try {
       await axios.delete(`https://blogs-6tlu.onrender.com/api/blogs/${blogId}`);
-      setBlogs(prev => prev.filter(b => b._id !== blogId));
+      setBlogs((prev) => prev.filter((b) => b._id !== blogId));
       if (selectedBlogId === blogId) setSelectedBlogId(null);
       if (viewBlog && viewBlog._id === blogId) closeModal();
     } catch (err) {
@@ -79,109 +66,113 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
       {/* Published Blogs */}
       <section>
         <h3 style={{ color: 'gold' }}>✅ Published</h3>
-        {blogs.filter(b => b.status === 'published').map(blog => (
-          <div
-            key={blog._id}
-            onClick={() => handleSelect(blog)}
-            onDoubleClick={() => handleDoubleClick(blog)}
-            style={{
-              cursor: 'pointer',
-              padding: '10px',
-              margin: '10px 0',
-              borderRadius: '8px',
-              border: '1px solid #ccc',
-              backgroundColor: selectedBlogId === blog._id ? '#fff8e1' : '#e3f2fd',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              color: 'black',
-            }}
-            title="Click to edit, double click to view"
-            onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
-            onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-          >
-            <div style={{ flex: '1 1 70%' }}>
-              <strong>{blog.title}</strong> — <em>{formatDate(blog.updated_at)}</em>
-            </div>
-            <button
-              onClick={e => {
-                e.stopPropagation();
-                handleDelete(blog._id);
-              }}
+        {blogs
+          .filter((b) => b.status === 'published')
+          .map((blog) => (
+            <div
+              key={blog._id}
+              onClick={() => handleSelect(blog)}
+              onDoubleClick={() => handleDoubleClick(blog)}
               style={{
-                backgroundColor: '#e53935',
-                border: 'none',
-                color: 'black',
-                padding: '5px 12px',
-                borderRadius: 4,
                 cursor: 'pointer',
-                fontWeight: 500,
-                transition: 'background-color 0.3s ease',
+                padding: '10px',
+                margin: '10px 0',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                backgroundColor: selectedBlogId === blog._id ? '#fff8e1' : '#e3f2fd',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                color: 'black',
               }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#b71c1c')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#e53935')}
+              title="Click to edit, double click to view"
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             >
-              Delete
-            </button>
-          </div>
-        ))}
+              <div style={{ flex: '1 1 70%' }}>
+                <strong>{blog.title}</strong> — <em>{formatDate(blog.updated_at)}</em>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(blog._id);
+                }}
+                style={{
+                  backgroundColor: '#e53935',
+                  border: 'none',
+                  color: 'black',
+                  padding: '5px 12px',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'background-color 0.3s ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#b71c1c')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#e53935')}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
       </section>
 
       {/* Draft Blogs */}
       <section>
         <h3 style={{ color: '#f57f17' }}>📝 Drafts</h3>
-        {blogs.filter(b => b.status === 'draft').map(blog => (
-          <div
-            key={blog._id}
-            onClick={() => handleSelect(blog)}
-            onDoubleClick={() => handleDoubleClick(blog)}
-            style={{
-              cursor: 'pointer',
-              padding: '10px',
-              margin: '10px 0',
-              borderRadius: '8px',
-              border: '1px solid #ccc',
-              backgroundColor: selectedBlogId === blog._id ? '#fffde7' : '#fff3e0',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              color: 'black',
-            }}
-            title="Click to edit, double click to view"
-            onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
-            onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-          >
-            <div style={{ flex: '1 1 70%' }}>
-              <strong>{blog.title}</strong> — <em>{formatDate(blog.updated_at)}</em>
-            </div>
-            <button
-              onClick={e => {
-                e.stopPropagation();
-                handleDelete(blog._id);
-              }}
+        {blogs
+          .filter((b) => b.status === 'draft')
+          .map((blog) => (
+            <div
+              key={blog._id}
+              onClick={() => handleSelect(blog)}
+              onDoubleClick={() => handleDoubleClick(blog)}
               style={{
-                backgroundColor: '#e53935',
-                border: 'none',
-                color: 'black',
-                padding: '5px 12px',
-                borderRadius: 4,
                 cursor: 'pointer',
-                fontWeight: 500,
-                transition: 'background-color 0.3s ease',
+                padding: '10px',
+                margin: '10px 0',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                backgroundColor: selectedBlogId === blog._id ? '#fffde7' : '#fff3e0',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                color: 'black',
               }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#b71c1c')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#e53935')}
+              title="Click to edit, double click to view"
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             >
-              Delete
-            </button>
-          </div>
-        ))}
+              <div style={{ flex: '1 1 70%' }}>
+                <strong>{blog.title}</strong> — <em>{formatDate(blog.updated_at)}</em>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(blog._id);
+                }}
+                style={{
+                  backgroundColor: '#e53935',
+                  border: 'none',
+                  color: 'black',
+                  padding: '5px 12px',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'background-color 0.3s ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#b71c1c')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#e53935')}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
       </section>
 
       {/* Modal for blog preview */}
@@ -205,7 +196,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
           }}
         >
           <div
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
             style={{
               backgroundColor: 'white',
               padding: 20,
@@ -235,7 +226,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
                 marginTop: 20,
                 backgroundColor: '#1976d2',
                 border: 'none',
-                color: 'white',  // Button text is better left white on blue bg for contrast
+                color: 'white',
                 padding: '8px 16px',
                 borderRadius: 4,
                 cursor: 'pointer',
