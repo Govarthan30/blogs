@@ -25,7 +25,6 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
   const [tags, setTags] = useState('');
   const [id, setId] = useState<string | null>(null);
 
-  // Populate form when blogToEdit changes
   useEffect(() => {
     if (blogToEdit) {
       setTitle(blogToEdit.title);
@@ -41,7 +40,7 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
   }, [blogToEdit]);
 
   const autoSave = async () => {
-    if (!title.trim() && !content.trim()) return; // don't save empty
+    if (!title.trim() && !content.trim()) return;
 
     try {
       const res = await axios.post('http://localhost:5000/api/blogs/save-draft', {
@@ -58,17 +57,15 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
     }
   };
 
-  // Save every 30s
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       autoSave();
     }, 30000);
     return () => clearInterval(interval);
   }, [title, content, tags, id]);
 
-  // Debounced save after 5s inactivity
   const debouncedAutoSave = debounce(autoSave, 5000);
-  React.useEffect(() => {
+  useEffect(() => {
     debouncedAutoSave();
     return debouncedAutoSave.cancel;
   }, [title, content, tags]);
@@ -96,30 +93,73 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
     }
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: '90%',
+    padding: '10px',
+    marginBottom: '10px',
+    fontSize: '18px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    transition: 'all 0.3s ease-in-out',
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  };
+
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-        style={{ width: '100%', padding: '10px', marginBottom: '10px', fontSize: '18px' }}
-      />
-      <ReactQuill value={content} onChange={setContent} />
-      <input
-        type="text"
-        placeholder="Tags (comma separated)"
-        value={tags}
-        onChange={e => setTags(e.target.value)}
-        style={{ width: '100%', padding: '10px', marginTop: '10px' }}
-      />
-      <div style={{ marginTop: 20 }}>
-        <button onClick={handlePublish} style={{ padding: '10px 20px' }}>
-          Publish
-        </button>
+    <>
+      {/* Style to make typed text black */}
+      <style>{`.ql-editor { color: #000 !important; }`}</style>
+
+      <div style={{ padding: '20px', borderRadius: '12px', background: '#f9f9f9', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+        {/* Title Input */}
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          style={inputStyle}
+          onFocus={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 123, 255, 0.3)')}
+          onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+        />
+
+        {/* Rich Text Editor */}
+        <ReactQuill value={content} onChange={setContent} />
+
+        {/* Tags Input */}
+        <input
+          type="text"
+          placeholder="Tags (comma separated)"
+          value={tags}
+          onChange={e => setTags(e.target.value)}
+          style={{ ...inputStyle, marginTop: '10px' }}
+          onFocus={e => (e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 123, 255, 0.3)')}
+          onBlur={e => (e.currentTarget.style.boxShadow = 'none')}
+        />
+
+        {/* Publish Button */}
+        <div style={{ marginTop: 20 }}>
+          <button
+            onClick={handlePublish}
+            style={buttonStyle}
+            onMouseOver={e => (e.currentTarget.style.backgroundColor = '#0056b3')}
+            onMouseOut={e => (e.currentTarget.style.backgroundColor = '#007bff')}
+          >
+            Publish
+          </button>
+        </div>
+
+        {/* Toast for notifications */}
+        <ToastContainer />
       </div>
-      <ToastContainer />
-    </div>
+    </>
   );
 };
 
