@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { blogs as initialBlogs } from '../types';
+import { blogs as initialBlogs } from '../mockData';
 import type { Blog } from '../types';
 interface BlogListProps {
   onEdit: (blog: Blog) => void;
