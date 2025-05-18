@@ -43,7 +43,7 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
     if (!title.trim() && !content.trim()) return;
 
     try {
-      const res = await axios.post('http://localhost:5000/api/blogs/save-draft', {
+      const res = await axios.post('https://blogs-6tlu.onrender.com/api/blogs/save-draft', {
         id,
         title,
         content,
@@ -76,7 +76,7 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
       return;
     }
     try {
-      await axios.post('http://localhost:5000/api/blogs/publish', {
+      await axios.post('https://blogs-6tlu.onrender.com/api/blogs/publish', {
         id,
         title,
         content,
