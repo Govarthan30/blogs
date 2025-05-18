@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import debounce from 'lodash/debounce';
@@ -6,7 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import type { Blog } from '../types';  // Import the Blog type here
+import type { Blog } from '../types';
 
 type EditorProps = {
   blogToEdit?: Blog | null;
@@ -33,7 +33,7 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
     }
   }, [blogToEdit]);
 
-  const autoSave = async () => {
+  const autoSave = useCallback(async () => {
     if (!title.trim() && !content.trim()) return;
 
     try {
@@ -43,26 +43,32 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
         content,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
       });
-      setId(res.data._id);
+      if (res.data._id) setId(res.data._id);
       toast.success('Auto-saved!', { autoClose: 1000 });
       onSave();
     } catch (err) {
       toast.error('Auto-save failed!');
     }
-  };
+  }, [title, content, tags, id, onSave]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       autoSave();
     }, 30000);
     return () => clearInterval(interval);
-  }, [title, content, tags, id]);
+  }, [autoSave]);
 
-  const debouncedAutoSave = debounce(autoSave, 5000);
+  // Debounce auto-save on changes with cleanup
+  const debouncedAutoSave = useCallback(debounce(() => {
+    autoSave();
+  }, 5000), [autoSave]);
+
   useEffect(() => {
     debouncedAutoSave();
-    return debouncedAutoSave.cancel;
-  }, [title, content, tags]);
+    return () => {
+      debouncedAutoSave.cancel();
+    };
+  }, [title, content, tags, debouncedAutoSave]);
 
   const handlePublish = async () => {
     if (!title.trim() || !content.trim()) {
@@ -111,7 +117,14 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
     <>
       <style>{`.ql-editor { color: #000 !important; }`}</style>
 
-      <div style={{ padding: '20px', borderRadius: '12px', background: '#f9f9f9', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+      <div
+        style={{
+          padding: '20px',
+          borderRadius: '12px',
+          background: '#f9f9f9',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        }}
+      >
         <input
           type="text"
           placeholder="Title"

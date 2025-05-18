@@ -5,4 +5,5 @@ export type Blog = {
   content: string;
   tags: string[];
   status: 'draft' | 'published';
+  updated_at: string;  // Add this so your component can use it without errors
 };

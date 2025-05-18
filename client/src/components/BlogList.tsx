@@ -7,7 +7,7 @@ const BlogList = ({ onEdit }) => {
   const [viewBlog, setViewBlog] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Fetch blogs from backend
+  // Fetch blogs from backend safely
   const fetchBlogs = async () => {
     try {
       const res = await axios.get('https://blogs-6tlu.onrender.com/api/blogs');
@@ -18,32 +18,51 @@ const BlogList = ({ onEdit }) => {
   };
 
   useEffect(() => {
-    fetchBlogs();
+    let isMounted = true;
+    (async () => {
+      try {
+        const res = await axios.get('https://blogs-6tlu.onrender.com/api/blogs');
+        if (isMounted) setBlogs(res.data);
+      } catch (err) {
+        if (isMounted) console.error('Error fetching blogs:', err);
+      }
+    })();
+
+    return () => {
+      isMounted = false; // cleanup to prevent state updates after unmount
+    };
   }, []);
 
-  // Format the timestamp into readable format
-  const formatDate = (date) =>
-    new Date(date).toLocaleString('en-IN', { hour12: true });
+  // Format date to readable string with 12h clock and Indian locale
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleString('en-IN', {
+      hour12: true,
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
-  // When a blog is clicked, load into editor
+  // Select a blog for editing
   const handleSelect = (blog) => {
     setSelectedBlogId(blog._id);
     onEdit(blog);
   };
 
-  // When blog is double-clicked, open preview modal
+  // Double click to open preview modal
   const handleDoubleClick = (blog) => {
     setViewBlog(blog);
     setModalVisible(true);
   };
 
-  // Close modal with fade-out
+  // Close modal with fade-out animation
   const closeModal = () => {
     setModalVisible(false);
-    setTimeout(() => setViewBlog(null), 300); // Delay to match fade animation
+    setTimeout(() => setViewBlog(null), 300);
   };
 
-  // Handle delete request
+  // Delete a blog
   const handleDelete = async (blogId) => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
 
@@ -112,6 +131,7 @@ const BlogList = ({ onEdit }) => {
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#b71c1c')}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#e53935')}
+                aria-label={`Delete blog titled ${blog.title}`}
               >
                 Delete
               </button>
@@ -168,6 +188,7 @@ const BlogList = ({ onEdit }) => {
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#b71c1c')}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#e53935')}
+                aria-label={`Delete blog titled ${blog.title}`}
               >
                 Delete
               </button>
@@ -178,6 +199,9 @@ const BlogList = ({ onEdit }) => {
       {/* Modal for blog preview */}
       {viewBlog && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
           onClick={closeModal}
           style={{
             position: 'fixed',
@@ -211,7 +235,7 @@ const BlogList = ({ onEdit }) => {
               color: 'black',
             }}
           >
-            <h2>{viewBlog.title}</h2>
+            <h2 id="modal-title">{viewBlog.title}</h2>
             <p>
               <strong>Status:</strong>{' '}
               <span style={{ textTransform: 'capitalize' }}>{viewBlog.status}</span>
@@ -241,7 +265,14 @@ const BlogList = ({ onEdit }) => {
       )}
 
       {/* Developer Credit */}
-      <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.85rem', color: 'white' }}>
+      <div
+        style={{
+          marginTop: '2rem',
+          textAlign: 'center',
+          fontSize: '0.85rem',
+          color: 'white',
+        }}
+      >
         Developed by{' '}
         <a
           href="https://www.linkedin.com/in/govarthan-v/"
