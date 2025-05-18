@@ -5,7 +5,6 @@ import debounce from 'lodash/debounce';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
-
 import type { Blog } from '../types';
 
 type EditorProps = {
