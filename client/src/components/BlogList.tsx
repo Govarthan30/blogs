@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const BlogList = ({ onEdit }) => {
-  const [blogs, setBlogs] = useState([]);
-  const [selectedBlogId, setSelectedBlogId] = useState(null);
-  const [viewBlog, setViewBlog] = useState(null);
+// Import blogs from local blogs.ts file (if you have local blog data)
+import { blogs as initialBlogs, Blog } from '../blogs';
+
+interface BlogListProps {
+  onEdit: (blog: Blog) => void;
+}
+
+const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
+  const [blogs, setBlogs] = useState<Blog[]>(initialBlogs || []);
+  const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
+  const [viewBlog, setViewBlog] = useState<Blog | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Fetch blogs from backend safely
+  // Fetch blogs from backend API safely
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get('https://blogs-6tlu.onrender.com/api/blogs');
+      const res = await axios.get<Blog[]>('https://blogs-6tlu.onrender.com/api/blogs');
       setBlogs(res.data);
     } catch (err) {
       console.error('Error fetching blogs:', err);
@@ -19,9 +26,10 @@ const BlogList = ({ onEdit }) => {
 
   useEffect(() => {
     let isMounted = true;
+
     (async () => {
       try {
-        const res = await axios.get('https://blogs-6tlu.onrender.com/api/blogs');
+        const res = await axios.get<Blog[]>('https://blogs-6tlu.onrender.com/api/blogs');
         if (isMounted) setBlogs(res.data);
       } catch (err) {
         if (isMounted) console.error('Error fetching blogs:', err);
@@ -29,12 +37,12 @@ const BlogList = ({ onEdit }) => {
     })();
 
     return () => {
-      isMounted = false; // cleanup to prevent state updates after unmount
+      isMounted = false;
     };
   }, []);
 
-  // Format date to readable string with 12h clock and Indian locale
-  const formatDate = (dateStr) =>
+  // Format date string to Indian locale with 12-hour format
+  const formatDate = (dateStr: string): string =>
     new Date(dateStr).toLocaleString('en-IN', {
       hour12: true,
       day: 'numeric',
@@ -44,26 +52,22 @@ const BlogList = ({ onEdit }) => {
       minute: '2-digit',
     });
 
-  // Select a blog for editing
-  const handleSelect = (blog) => {
+  const handleSelect = (blog: Blog) => {
     setSelectedBlogId(blog._id);
     onEdit(blog);
   };
 
-  // Double click to open preview modal
-  const handleDoubleClick = (blog) => {
+  const handleDoubleClick = (blog: Blog) => {
     setViewBlog(blog);
     setModalVisible(true);
   };
 
-  // Close modal with fade-out animation
   const closeModal = () => {
     setModalVisible(false);
     setTimeout(() => setViewBlog(null), 300);
   };
 
-  // Delete a blog
-  const handleDelete = async (blogId) => {
+  const handleDelete = async (blogId: string) => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
 
     try {
