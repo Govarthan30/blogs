@@ -92,7 +92,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
         flexWrap: 'wrap',
         color: 'black',
       }}
-      title="Click to edit, double click to view"
+      title="Click to edit, double click to view, Refresh to See Published Works"
       onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
       onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
     >
