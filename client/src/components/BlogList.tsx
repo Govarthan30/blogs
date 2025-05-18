@@ -23,7 +23,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
   // Fetch blogs from backend
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/blogs');
+      const res = await axios.get('https://blogs-6tlu.onrender.com/api/blogs');
       setBlogs(res.data);
     } catch (err) {
       console.error('Error fetching blogs:', err);
@@ -61,7 +61,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/blogs/${blogId}`);
+      await axios.delete(`https://blogs-6tlu.onrender.com/api/blogs/${blogId}`);
       setBlogs(prev => prev.filter(b => b._id !== blogId));
       if (selectedBlogId === blogId) setSelectedBlogId(null);
       if (viewBlog && viewBlog._id === blogId) closeModal();
