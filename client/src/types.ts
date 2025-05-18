@@ -1,9 +1,8 @@
-// src/types.ts
 export type Blog = {
   _id: string;
   title: string;
   content: string;
-  tags: string[];
+  tags: string[]; // ⚠ This is missing in blogs.ts mock data
   status: 'draft' | 'published';
-  updated_at: string;  // Add this so your component can use it without errors
+  updated_at: string;
 };
