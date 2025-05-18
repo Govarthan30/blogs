@@ -71,10 +71,11 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
 
   return (
     <>
-      <h2 style={{ color: '#222' }}>📜 All Blogs</h2>
+      <h2 style={{ color: 'white' }}>📜 All Blogs</h2>
+      <h3>Click blog to Edit on Editor</h3>
 
       <div>
-        <h3 style={{ color: '#00796b' }}>Published</h3>
+        <h3 style={{ color: 'blue' }}>Published</h3>
         {blogs
           .filter(blog => blog.status === 'published')
           .map(blog => (
@@ -86,7 +87,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
                 cursor: 'pointer',
                 padding: '10px',
                 borderBottom: '1px solid #ccc',
-                backgroundColor: selectedBlogId === blog._id ? '#e0f7fa' : undefined,
+                backgroundColor: selectedBlogId === blog._id ? 'gold' : undefined,
                 userSelect: 'none',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -120,8 +121,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
           ))}
       </div>
 
-      <div style={{ marginTop: '30px' }}>
-        <h3 style={{ color: '#f9a825' }}>Drafts</h3>
+      <div style={{ marginTop: '00px' }}>
         {blogs
           .filter(blog => blog.status === 'draft')
           .map(blog => (
