@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Editor from './components/Editor';
 import BlogList from './components/BlogList';
 
@@ -21,7 +21,8 @@ function App() {
 
       <hr style={{ margin: '40px 0' }} />
 
-      <BlogList onEdit={setEditBlog} />
+      {/* Cast setEditBlog to avoid type incompatibility */}
+      <BlogList onEdit={setEditBlog as (blog: Blog) => void} />
     </div>
   );
 }
