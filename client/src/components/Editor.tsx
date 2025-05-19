@@ -121,7 +121,7 @@ const Editor: React.FC<EditorProps> = ({ blogToEdit, onSave }) => {
           padding: '20px',
           borderRadius: '12px',
           background: '#f9f9f9',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
         }}
       >
         <input

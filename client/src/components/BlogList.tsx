@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { blogs as initialBlogs } from '../mockData';
 import type { Blog } from '../types';
+
 interface BlogListProps {
   onEdit: (blog: Blog) => void;
 }
@@ -126,7 +127,8 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
   return (
     <div style={{ padding: '1rem', fontFamily: 'Segoe UI, sans-serif' }}>
       <h1 style={{ color: 'white', textAlign: 'center' }}>📜 All Blogs</h1>
-      <h3 style={{ textAlign: 'center' }}>Click to Edit • Double Click to Preview</h3>
+      <h3 style={{ textAlign: 'center' }}>Click to Edit • Double Click to Preview • Refresh to update Blog</h3>
+      <h3 style={{ textAlign: 'center' }}>Wait 5 seconds to Load Database</h3>
 
       {/* Published */}
       <section>
@@ -206,6 +208,26 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit }) => {
           </div>
         </div>
       )}
+
+      {/* Developer Credits */}
+      <footer
+        style={{
+          textAlign: 'center',
+          marginTop: '2rem',
+          color: '#ccc',
+          fontSize: '0.9rem',
+        }}
+      >
+        Developed by{' '}
+        <a
+          href="https://www.linkedin.com/in/govarthan-v/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#90caf9', textDecoration: 'none', fontWeight: 'bold' }}
+        >
+          Govarthan V
+        </a>
+      </footer>
     </div>
   );
 };
